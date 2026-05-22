@@ -1,8 +1,8 @@
 package com.example.demo.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotEmpty;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 public class Movie {
@@ -17,7 +17,6 @@ public class Movie {
     private String movieGenre;
 
     public Movie() {
-        // default constructor
     }
 
     public Movie(Integer id, String movieName, String movieGenre) {
