@@ -10,5 +10,5 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.entity.Movie;
 @Repository
 public interface MovieRepository extends JpaRepository<Movie, Integer> {
-List<Movie> findByMovieGenere(String s);
+List<Movie> findByMovieGenre(String s);
 }
