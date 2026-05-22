@@ -1,0 +1,2 @@
+FROM eclipse-temurin:17-jre-alpine
+copy target/*.war /usr/local/tomcat/webapps/
