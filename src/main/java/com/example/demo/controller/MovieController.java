@@ -6,62 +6,46 @@ import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import com.example.demo.entity.Movie;
-import com.example.demo.service.MovieService;
+import com.example.demo.repository.MovieRepository;
 
 @Controller
 public class MovieController {
-	@Autowired
-MovieService ms;
-	@GetMapping("/{name}")
 
-public String love(@PathVariable String name, Model model) {
+    @Autowired
+    private MovieRepository movieRepository;
 
-        model.addAttribute("name", name);  // ✅ passing data
+    // ✅ Show all movies
+    @GetMapping("/")
+    public String viewHomePage(Model model) {
+        List<Movie> listMovies = movieRepository.findAll();
+        model.addAttribute("listMovies", listMovies);
+        return "index";
+    }
 
-        return "love";
+    // ✅ Show form to add new movie
+    @GetMapping("/showNewMovieForm")
+    public String showNewMovieForm(Model model) {
+        Movie movie = new Movie();
+        model.addAttribute("movie", movie);
+        return "new_movie";
+    }
 
-	}
-	@GetMapping("/movies")
-	List<Movie> getAllMovies(){
-		List<Movie> l=ms.movieList();
-		return l;
-		
-	}
-	@PostMapping("/movies")
-	String addMoviee(@RequestBody Movie movie) {
-		String s=ms.addMovie(movie);
-		return s;
-		
-	}
-	@PutMapping("/movies")
-	String update(@RequestBody Movie movie) {
-		String s=ms.updateMovie(movie);
-		return s;
-		
-	}
-	@GetMapping("/movies/{genere}")
-	List<Movie> getByGenere(@PathVariable("genere") String genere ){
-		List<Movie> l=ms.findBygenere(genere);
-		return l;
-		
-	}
-	
-	@DeleteMapping("/movies/{id}")
-	String deletebyId(@PathVariable("id") int id) {
-		String s=ms.deleteById(id);
-		return s;
-	
-	
-}
-}
+    // ✅ Save movie
+    @PostMapping("/saveMovie")
+    public String saveMovie(@Valid @ModelAttribute("movie") Movie movie) {
+        movieRepository.save(movie);
+        return "redirect:/";
+    }
+
+    // ✅ Show form to update movie
+    @GetMapping("/showFormForUpdate/{id}")
+    public String showFormForUpdate(@PathVariable(value = "id") Integer id, Model model) {
+
+        Movie movie = movieRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid movie Id: " + id));
+
+        model.addAttribute("movie", movie);
